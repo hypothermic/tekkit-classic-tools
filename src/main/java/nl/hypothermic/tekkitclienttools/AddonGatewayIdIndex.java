@@ -1,0 +1,14 @@
+package nl.hypothermic.tekkitclienttools;
+
+public interface AddonGatewayIdIndex {
+
+	long BLOCK_BRIGHTNESS_VALUE = 1;
+	long BLOCK_BRIGHTNESS_ENABLED = 2;
+	long MIXED_BLOCK_BRIGHTNESS_VALUE = 3;
+	long MIXED_BLOCK_BRIGHTNESS_ENABLED = 4;
+	long BLOCK_OPACITY_VALUE = 5;
+	long BLOCK_TRANSPARENCY_ENABLED = 6;
+	long INGAME_OVERLAY_RENDER = 7;
+	long KEYBOARD_INPUT = 8;
+	long RELOAD_REQUIRED_VALUE_ID = 9;
+}

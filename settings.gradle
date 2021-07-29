@@ -1,0 +1,13 @@
+rootProject.name = 'tekkit-client-tools'
+
+if (startParameter.projectProperties.containsKey("local")) {
+    include ':asm-htf-api'
+    include ':asm-htf-loader'
+    include ':asm-htf-processor'
+    include ':asm-htf-utils'
+
+    project(":asm-htf-api").projectDir = file("../asm-htf/asm-htf-api")
+    project(":asm-htf-loader").projectDir = file("../asm-htf/asm-htf-loader")
+    project(":asm-htf-processor").projectDir = file("../asm-htf/asm-htf-processor")
+    project(":asm-htf-utils").projectDir = file("../asm-htf/asm-htf-utils")
+}
