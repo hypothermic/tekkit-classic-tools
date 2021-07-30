@@ -62,9 +62,9 @@ public class BlockTypeRenderBehaviourTransformer extends MethodNode implements O
 			InsnList insnList = new InsnList();
 
 			// if
+			insnList.add(new LdcInsnNode(15));
 			insnList.add(new VarInsnNode(ALOAD, 1));
 			insnList.add(new FieldInsnNode(GETFIELD, "pb", "bO", "I"));
-			insnList.add(new LdcInsnNode(17));
 			insnList.add(new JumpInsnNode(IF_ICMPEQ, trueLabelNode));
 
 			// true

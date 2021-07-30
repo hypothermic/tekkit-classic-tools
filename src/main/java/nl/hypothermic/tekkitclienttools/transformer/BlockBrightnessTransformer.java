@@ -3,6 +3,7 @@ package nl.hypothermic.tekkitclienttools.transformer;
 import nl.hypothermic.htf.api.Gateway;
 import nl.hypothermic.htf.api.MethodTransformer;
 import nl.hypothermic.htf.utils.GatewayCreator;
+import nl.hypothermic.htf.utils.IfStatementBuilder;
 import nl.hypothermic.tekkitclienttools.AddonGatewayIdIndex;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
@@ -38,58 +39,48 @@ public class BlockBrightnessTransformer extends MethodNode {
 
 	@Override
 	public void visitCode() {
-		Label trueLabel = new Label(),
-			  afterFalseLabel = new Label();
+		IfStatementBuilder builder = IfStatementBuilder.newBuilder();
 
-		// if
-
-		GatewayCreator.create(
-				this,
-				GatewayCreator.ref(BlockBrightnessTransformer.class, "isBrightnessEnabled")
-		);
-		visitJumpInsn(IFEQ, trueLabel);
-
-		// true
-
-		GatewayCreator.create(
+		builder.onLoad(methodVisitor ->
+				GatewayCreator.create(
+						methodVisitor,
+						GatewayCreator.ref(BlockBrightnessTransformer.class, "isBrightnessEnabled")
+				));
+		builder.setOpcode(IFEQ);
+		builder.onTrue(methodVisitor -> GatewayCreator.create(
 				this,
 				GatewayCreator.ref(BlockBrightnessTransformer.class, "getBrightnessValue")
-		);
+		));
+		builder.onFalse(methodVisitor -> {
+			methodVisitor.visitVarInsn(ALOAD, 1);
+			methodVisitor.visitVarInsn(ILOAD, 2);
+			methodVisitor.visitVarInsn(ILOAD, 3);
+			methodVisitor.visitVarInsn(ILOAD, 4);
+			methodVisitor.visitFieldInsn(
+					GETSTATIC,
+					"pb",
+					"q",
+					"[I"
+			);
+			methodVisitor.visitVarInsn(ALOAD, 0);
+			methodVisitor.visitFieldInsn(
+					GETFIELD,
+					"pb",
+					"bO",
+					"I"
+			);
+			methodVisitor.visitInsn(IALOAD);
+			methodVisitor.visitMethodInsn(
+					INVOKEINTERFACE,
+					"ali",
+					"a",
+					"(IIII)F"
+			);
+		});
 
-		visitJumpInsn(GOTO, afterFalseLabel);
-		visitLabel(trueLabel);
+		builder.insert(this);
 
-		// false
-
-		visitVarInsn(ALOAD, 1);
-		visitVarInsn(ILOAD, 2);
-		visitVarInsn(ILOAD, 3);
-		visitVarInsn(ILOAD, 4);
-		visitFieldInsn(
-				GETSTATIC,
-				"pb",
-				"q",
-				"[I"
-		);
-		visitVarInsn(ALOAD, 0);
-		visitFieldInsn(
-				GETFIELD,
-				"pb",
-				"bO",
-				"I"
-		);
-		visitInsn(IALOAD);
-		visitMethodInsn(
-				INVOKEINTERFACE,
-				"ali",
-				"a",
-				"(IIII)F"
-		);
-
-		visitLabel(afterFalseLabel);
-
-		// merge
-
+		// return the brightness
 		visitInsn(FRETURN);
 	}
 

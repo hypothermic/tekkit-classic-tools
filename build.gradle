@@ -8,15 +8,13 @@ version '10.0.0.1'
 repositories {
     mavenCentral()
 
-    if (!project.hasProperty("local")) {
-        maven {
-            name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/hypothermic/asm-htf")
+    maven {
+        name = "GitHubPackages"
+        url = uri("https://maven.pkg.github.com/hypothermic/asm-htf")
 
-            credentials {
-                username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
-                password = project.findProperty("gpr.key") ?: System.getenv("TOKEN")
-            }
+        credentials {
+            username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
+            password = project.findProperty("gpr.key") ?: System.getenv("TOKEN")
         }
     }
 }
@@ -25,23 +23,13 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
 
-    if (project.hasProperty("local")) {
-        runtime project(':asm-htf-api')
-        implementation project(':asm-htf-api')
+    runtime 'nl.hypothermic:asm-htf-api:10.0.0.2'
+    implementation 'nl.hypothermic:asm-htf-api:10.0.0.2'
 
-        runtime project(':asm-htf-utils')
-        implementation project(':asm-htf-utils')
+    runtime 'nl.hypothermic:asm-htf-utils:10.0.0.2'
+    implementation 'nl.hypothermic:asm-htf-utils:10.0.0.2'
 
-        annotationProcessor project(':asm-htf-processor')
-    } else {
-        runtime 'nl.hypothermic:asm-htf-api:10.0.0.1'
-        implementation 'nl.hypothermic:asm-htf-api:10.0.0.1'
-
-        runtime 'nl.hypothermic:asm-htf-utils:10.0.0.1'
-        implementation 'nl.hypothermic:asm-htf-utils:10.0.0.1'
-
-        annotationProcessor 'nl.hypothermic:asm-htf-processor:10.0.0.1'
-    }
+    annotationProcessor 'nl.hypothermic:asm-htf-processor:10.0.0.2'
 }
 
 test {

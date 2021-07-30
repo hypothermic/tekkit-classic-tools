@@ -3,6 +3,7 @@ package nl.hypothermic.tekkitclienttools.transformer;
 import nl.hypothermic.htf.api.Gateway;
 import nl.hypothermic.htf.api.MethodTransformer;
 import nl.hypothermic.htf.utils.GatewayCreator;
+import nl.hypothermic.htf.utils.IfStatementBuilder;
 import nl.hypothermic.tekkitclienttools.AddonGatewayIdIndex;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
@@ -31,45 +32,34 @@ public class BlockOpacityTransformer extends MethodNode implements Opcodes {
 
 	@Override
 	public void visitCode() {
-		Label trueLabel = new Label(),
-			  afterFalseLabel = new Label();
-
 		visitVarInsn(Opcodes.ALOAD, 0);
 		visitVarInsn(Opcodes.ILOAD, 1);
 		visitVarInsn(Opcodes.ILOAD, 2);
 		visitVarInsn(Opcodes.ILOAD, 3);
 
-		// if
+		IfStatementBuilder builder = IfStatementBuilder.newBuilder();
 
-		// Because isTransparencyEnabled accepts an int as input value, we need to pass a dummy int
-		GatewayCreator.create(
-				this,
-				GatewayCreator.ref(BlockRenderPassTransformer.class, "isTransparencyEnabled"),
-				methodVisitor -> {
-					methodVisitor.visitLdcInsn(-1);
-					return null;
-				}
-		);
-		visitJumpInsn(IFEQ, trueLabel);
+		// if isTransparencyEnabled, get the opacity from getOpacityValue, otherwise use the default (255)
+		builder.onLoad(methodVisitor ->
+				GatewayCreator.create(
+						this,
+						GatewayCreator.ref(BlockRenderPassTransformer.class, "isTransparencyEnabled"),
+						innerMethodVisitor -> {
+							innerMethodVisitor.visitLdcInsn(-1);
+							return null;
+						}
+				));
+		builder.setOpcode(IFEQ);
+		builder.onTrue(methodVisitor ->
+				GatewayCreator.create(
+						this,
+						GatewayCreator.ref(BlockOpacityTransformer.class, "getOpacityValue")
+				));
+		builder.onFalse(methodVisitor ->
+				methodVisitor.visitLdcInsn(255));
+		builder.insert(this);
 
-		// true
-
-		GatewayCreator.create(
-				this,
-				GatewayCreator.ref(BlockOpacityTransformer.class, "getOpacityValue")
-		);
-
-		visitJumpInsn(GOTO, afterFalseLabel);
-		visitLabel(trueLabel);
-
-		// false
-
-		visitLdcInsn(255);
-
-		visitLabel(afterFalseLabel);
-
-		// merge
-
+		// adjust the opacity
 		visitMethodInsn(
 				Opcodes.INVOKEVIRTUAL,
 				"adz",
@@ -77,6 +67,7 @@ public class BlockOpacityTransformer extends MethodNode implements Opcodes {
 				"(IIII)V"
 		);
 
+		// do not continue with the method
 		visitInsn(RETURN);
 		visitEnd();
 	}

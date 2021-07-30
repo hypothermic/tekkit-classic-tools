@@ -2,14 +2,14 @@
 # Make sure to export your JAVA_HOME !! always use JRE7 or JRE8
 # Make sure to export your TECHNIC_LAUNCHER_PATH !! this is the /path/to/your/.technic
 
-ASM_HTF_PATH="../asm-htf"
+#ASM_HTF_PATH="../asm-htf"
 TEKKIT_PATH="$TECHNIC_LAUNCHER_PATH/modpacks/tekkit"
 
-./gradlew -Plocal clean build :asm-htf-loader:bundleJar || exit
+./gradlew -Plocal clean build || exit
 
 # Move the newly built jars into technic tekkit folder
 #cp -v ../asm-htf/asm-htf-*/build/libs/asm-htf-*-*.jar "$TEKKIT_PATH" || exit
-cp "$ASM_HTF_PATH/asm-htf-loader/build/libs/asm-htf-bundle-10.0.0.1.jar" "$TEKKIT_PATH" || exit
+#cp "$ASM_HTF_PATH/asm-htf-loader/build/libs/asm-htf-bundle-10.0.0.1.jar" "$TEKKIT_PATH" || exit
 cp ./build/libs/tekkit-client-tools-*.jar "$TEKKIT_PATH" || exit
 
 # enter the following JVM args in the technic launcher:

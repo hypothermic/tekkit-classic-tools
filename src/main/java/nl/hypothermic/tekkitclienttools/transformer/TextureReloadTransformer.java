@@ -3,8 +3,8 @@ package nl.hypothermic.tekkitclienttools.transformer;
 import nl.hypothermic.htf.api.Gateway;
 import nl.hypothermic.htf.api.MethodTransformer;
 import nl.hypothermic.htf.utils.GatewayCreator;
+import nl.hypothermic.htf.utils.IfStatementBuilder;
 import nl.hypothermic.tekkitclienttools.AddonGatewayIdIndex;
-import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.tree.MethodNode;
 
@@ -32,47 +32,38 @@ public class TextureReloadTransformer extends MethodNode {
 
 	@Override
 	public void visitCode() {
-		Label trueLabel = new Label(),
-			  afterFalseLabel = new Label();
+		IfStatementBuilder builder = IfStatementBuilder.newBuilder();
 
-		// if reload required
+		builder.onLoad(methodVisitor ->
+				GatewayCreator.create(
+						this,
+						GatewayCreator.ref(TextureReloadTransformer.class, "isReloadRequired")
+				));
+		builder.setOpcode(IFEQ);
+		builder.onTrue(methodVisitor -> {
+			// call <mc>.renderEngine.loadTextures() aka <mc>.g.a()V
 
-		GatewayCreator.create(
-				this,
-				GatewayCreator.ref(TextureReloadTransformer.class, "isReloadRequired")
-		);
-
-		visitJumpInsn(IFEQ, trueLabel);
-
-		// true, call <mc>.renderEngine.loadTextures() aka <mc>.g.a()V
-
-		visitFieldInsn(
-				GETSTATIC,
-				"net/minecraft/client/Minecraft",
-				"a",
-				"Lnet/minecraft/client/Minecraft;"
-		);
-		visitFieldInsn(
-				GETFIELD,
-				"net/minecraft/client/Minecraft",
-				"g",
-				"Ll;"
-		);
-		visitMethodInsn(
-				INVOKEVIRTUAL,
-				"l",
-				"a",
-				"()V"
-		);
-
-		visitJumpInsn(GOTO, afterFalseLabel);
-		visitLabel(trueLabel);
-
-		// false, empty
-
-		visitLabel(afterFalseLabel);
-
-		// merge
+			methodVisitor.visitFieldInsn(
+					GETSTATIC,
+					"net/minecraft/client/Minecraft",
+					"a",
+					"Lnet/minecraft/client/Minecraft;"
+			);
+			methodVisitor.visitFieldInsn(
+					GETFIELD,
+					"net/minecraft/client/Minecraft",
+					"g",
+					"Ll;"
+			);
+			methodVisitor.visitMethodInsn(
+					INVOKEVIRTUAL,
+					"l",
+					"a",
+					"()V"
+			);
+		});
+		builder.onFalse(methodVisitor -> {});
+		builder.insert(this);
 	}
 
 	@Override

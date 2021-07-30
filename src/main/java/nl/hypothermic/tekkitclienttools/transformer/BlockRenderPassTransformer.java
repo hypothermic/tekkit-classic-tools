@@ -36,15 +36,17 @@ public class BlockRenderPassTransformer extends MethodNode implements Opcodes {
 
 	@Override
 	public void visitCode() {
+		// check if transparency is enabled for block with this ID
 		GatewayCreator.create(
 				this,
 				GatewayCreator.ref(BlockRenderPassTransformer.class, "isTransparencyEnabled"),
 				methodVisitor -> {
-					visitVarInsn(ALOAD, 0);
-					visitFieldInsn(GETFIELD, "pb", "bO", "I");
+					methodVisitor.visitVarInsn(ALOAD, 0);
+					methodVisitor.visitFieldInsn(GETFIELD, "pb", "bO", "I");
 					return null;
 				}
 		);
+
 		// convert the return value from boolean to int
 		visitMethodInsn(
 				Opcodes.INVOKESTATIC,
