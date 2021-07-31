@@ -132,7 +132,7 @@ public class TerrainToolControlTab extends BaseToolControlTab {
 
 		BaseFlexComponent listComponent = FlexComponent
 				.create(root -> root
-						.list(Void.class, VERTICAL, vertical -> {
+						.list(VERTICAL, vertical -> {
 							vertical.flex(opacityComponent);
 							vertical.flex(brightnessComponent);
 							vertical.flex(mixedBrightnessComponent);

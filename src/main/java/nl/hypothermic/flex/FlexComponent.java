@@ -38,6 +38,10 @@ public final class FlexComponent<T> {
 		return flexComponent;
 	}
 
+	public FlexComponent<T> overlap(Consumer<FlexComponent<Void>> consumer) {
+		return overlap(Void.class, consumer);
+	}
+
 	public <A> FlexComponent<T> overlap(Class<A> stateType, Consumer<FlexComponent<A>> consumer) {
 		return overlap(stateType, null, consumer);
 	}
@@ -55,6 +59,10 @@ public final class FlexComponent<T> {
 		this.builder.addChild(flexComponent.builder);
 
 		return this;
+	}
+
+	public FlexComponent<T> list(ListContainerFlexComponent.Direction direction, Consumer<FlexComponent<Void>> consumer) {
+		return list(Void.class, direction, consumer);
 	}
 
 	public <A> FlexComponent<T> list(Class<A> stateType, ListContainerFlexComponent.Direction direction, Consumer<FlexComponent<A>> consumer) {
