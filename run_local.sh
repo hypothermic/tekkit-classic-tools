@@ -7,20 +7,22 @@ MINECRAFT_LIBS="bin/modpack.jar:bin/minecraft.jar"
 
 LIBS="$LWJGL_LIBS:$JINPUT_LIBS:$MINECRAFT_LIBS"
 
-./gradlew -Plocal clean build :asm-htf-loader:bundleJar || exit
+#./gradlew -Plocal clean build :asm-htf-loader:bundleJar || exit
+./gradlew -Plocal clean build || exit
 
-mkdir -p ./client/addons
+#mkdir -p ./client/addons
 
 # Move the newly built jars into client folder
-cp -v ../asm-htf/asm-htf-*/build/libs/asm-htf-*-*.jar ./client/ || exit
-cp -v ./build/libs/tekkit-client-tools-*.jar ./client/addons || exit
+#cp -v ../asm-htf/asm-htf-*/build/libs/asm-htf-*-*.jar ./client/ || exit
+#cp -v ./build/libs/tekkit-client-tools-*.jar ./client/addons || exit
+cp -v ./build/libs/tekkit-client-tools-*.jar ./client/ || exit
 
 # Start the client
 cd ./client || exit
 
-$JAVA_HOME/bin/java \
-    -javaagent:"asm-htf-loader-10.0.0.1.jar=/home/xforce/IdeaProjects/tekkit-client-tools/client/addons/tekkit-client-tools-10.0.0.1.jar" \
-    -cp "asm-htf-api-10.0.0.1.jar:$LIBS" \
+"$JAVA_HOME"/bin/java \
+    -javaagent:"asm-htf-bundle-10.0.0.2.jar=/home/xforce/IdeaProjects/tekkit-client-tools/client/tekkit-client-tools-10.0.0.1.jar" \
+    -cp "$LIBS" \
     -Djava.library.path=bin/natives/ \
     net.minecraft.client.Minecraft \
     -Xmx2G -Xms1Gd

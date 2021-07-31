@@ -21,7 +21,8 @@ public class ToolControlFrame extends JFrame {
 				.map(tabClazz -> {
 					try {
 						return tabClazz.newInstance(this);
-					} catch (Exception ignored) {
+					} catch (Exception e) {
+						e.printStackTrace();
 						return null;
 					}
 				})

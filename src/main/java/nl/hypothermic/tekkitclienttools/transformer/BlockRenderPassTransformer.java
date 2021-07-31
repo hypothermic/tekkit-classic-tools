@@ -14,9 +14,9 @@ import java.util.HashSet;
 @SuppressWarnings("unused")
 public class BlockRenderPassTransformer extends MethodNode implements Opcodes {
 
-	public static boolean transparencyEnabled = false;
-
 	public static final HashSet<Integer> EXCLUDED_BLOCKS = new HashSet<>();
+
+	public static boolean transparencyEnabled = false;
 
 	public BlockRenderPassTransformer(int access, String name, String desc, String signature, String[] exceptions, MethodVisitor mv) {
 		super(ASM4, access, name, desc, signature, exceptions);

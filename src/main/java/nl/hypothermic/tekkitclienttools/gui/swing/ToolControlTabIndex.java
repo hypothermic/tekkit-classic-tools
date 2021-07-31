@@ -3,7 +3,7 @@ package nl.hypothermic.tekkitclienttools.gui.swing;
 public enum ToolControlTabIndex {
 
 	GENERAL(GeneralToolControlTab.class),
-	VISION(VisionToolControlTab.class),
+	TERRAIN(TerrainToolControlTab.class),
 
 	;
 

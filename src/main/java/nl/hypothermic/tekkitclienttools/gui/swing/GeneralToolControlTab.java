@@ -1,7 +1,12 @@
 package nl.hypothermic.tekkitclienttools.gui.swing;
 
+import nl.hypothermic.flex.FlexComponent;
+import nl.hypothermic.flex.component.BaseFlexComponent;
+
 import javax.swing.*;
 import java.awt.event.ItemEvent;
+
+import static nl.hypothermic.flex.component.ListContainerFlexComponent.Direction.VERTICAL;
 
 public class GeneralToolControlTab extends BaseToolControlTab {
 
@@ -10,36 +15,31 @@ public class GeneralToolControlTab extends BaseToolControlTab {
 	public GeneralToolControlTab(ToolControlFrame parentFrame) {
 		this.parentFrame = parentFrame;
 
+		BaseFlexComponent listComponent = FlexComponent
+				.create(root -> root
+						.list(Void.class, VERTICAL, vertical -> vertical
+								.checkbox(checkbox -> checkbox
+										.setLabel("Always on top")
+										.setInitialValue(parentFrame.isAlwaysOnTop())
+										.setEnabled(parentFrame.isAlwaysOnTopSupported())
+										.onChanged(parentFrame::setAlwaysOnTop)
+								)
+								.checkbox(checkbox -> checkbox
+										.setLabel("Window decoration")
+										.setInitialValue(!parentFrame.isUndecorated())
+										.onChanged(newValue -> {
+											parentFrame.dispose();
+											parentFrame.setUndecorated(!newValue);
+											parentFrame.setVisible(true);
+										})
+								)
+						)
+				).build();
+
 		GroupLayout groupLayout = getBaseLayout();
-		JCheckBox checkBox = new JCheckBox("Always on top");
-		JCheckBox checkBox2 = new JCheckBox("Window decoration");
 
-		checkBox.setEnabled(parentFrame.isAlwaysOnTopSupported());
-		checkBox.setSelected(parentFrame.isAlwaysOnTop());
-		checkBox.addItemListener(e -> parentFrame.setAlwaysOnTop(e.getStateChange() == ItemEvent.SELECTED));
-
-		checkBox2.setSelected(!parentFrame.isUndecorated());
-		checkBox2.addItemListener(e -> {
-			parentFrame.dispose();
-			parentFrame.setUndecorated(e.getStateChange() == ItemEvent.DESELECTED);
-			parentFrame.setVisible(true);
-		});
-
-		groupLayout.setHorizontalGroup(
-				groupLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-						.addComponent(checkBox)
-						.addComponent(checkBox2)
-		);
-
-		groupLayout.setVerticalGroup(
-				groupLayout.createSequentialGroup()
-						.addGroup(groupLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-								.addComponent(checkBox)
-						)
-						.addGroup(groupLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-								.addComponent(checkBox2)
-						)
-		);
+		groupLayout.setHorizontalGroup(listComponent.createHorizontalGroup(groupLayout));
+		groupLayout.setVerticalGroup(listComponent.createVerticalGroup(groupLayout));
 	}
 
 	@Override
