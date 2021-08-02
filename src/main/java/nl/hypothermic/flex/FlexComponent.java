@@ -124,6 +124,15 @@ public final class FlexComponent<T> {
 		return this;
 	}
 
+	public FlexComponent<T> colorPicker(Consumer<ColorpickerFlexComponent.Builder> consumer) {
+		ColorpickerFlexComponent.Builder builder = new ColorpickerFlexComponent.Builder();
+
+		consumer.accept(builder);
+		this.builder.addChild(builder);
+
+		return this;
+	}
+
 	public GenericObservable<T> getState() {
 		return this.state;
 	}

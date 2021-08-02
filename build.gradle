@@ -30,6 +30,8 @@ dependencies {
     implementation 'nl.hypothermic:asm-htf-utils:10.0.0.2'
 
     annotationProcessor 'nl.hypothermic:asm-htf-processor:10.0.0.2'
+
+    compileOnly 'org.lwjgl.lwjgl:lwjgl:2.9.0'
 }
 
 test {

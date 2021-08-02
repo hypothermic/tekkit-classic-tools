@@ -2,14 +2,15 @@ package nl.hypothermic.tekkitclienttools.gui;
 
 import nl.hypothermic.tekkitclienttools.transformer.TextureReloadTransformer;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 public final class GuiTools {
 
-	private static final Class<?> tessellatorClass, minecraftClass;
-	private static final Object tessellatorInstance, minecraftInstance, fontRenderer;
-	private static final Method drawStringMethod;
+	private static final Class<?> tessellatorClass, minecraftClass, renderGlobalClass, aabbClass;
+	private static final Object tessellatorInstance, minecraftInstance, fontRenderer, renderGlobalInstance;
+	private static final Method drawStringMethod, drawObbMethod, newAabbMethod;
 
 	public static void drawRect(int x, int y, int width, int height, int color, float opacity) {
 		float f = (float)(color >> 24 & 0xff) / 255F;
@@ -42,8 +43,20 @@ public final class GuiTools {
 		}
 	}
 
+	public static void drawOutlinedBoundingBox(double xStart, double yStart, double zStart, double xEnd, double yEnd, double zEnd) {
+		try {
+			drawObbMethod.invoke(renderGlobalInstance, newAabbMethod.invoke(null, xStart, yStart, zStart, xEnd, yEnd, zEnd));
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
 	public static void reloadTextures() {
 		TextureReloadTransformer.reloadRequired = true;
+	}
+
+	private GuiTools() {
+		throw new UnsupportedOperationException();
 	}
 
 	static {
@@ -59,6 +72,15 @@ public final class GuiTools {
 
 			tessellatorClass = Class.forName("adz");
 			tessellatorInstance = tessellatorClass.getField("a").get(null);
+
+			aabbClass = Class.forName("wu");
+			newAabbMethod = aabbClass.getMethod("a", double.class, double.class, double.class, double.class, double.class, double.class);
+
+			renderGlobalClass = Class.forName("l");
+			drawObbMethod = renderGlobalClass.getDeclaredMethod("a", aabbClass);
+			drawObbMethod.setAccessible(true);
+
+			renderGlobalInstance = minecraftClass.getField("g").get(minecraftInstance);
 		} catch (Exception e) {
 			throw new RuntimeException();
 		}

@@ -1,6 +1,7 @@
 package nl.hypothermic.flex.component;
 
 import nl.hypothermic.flex.FlexComponentBuilder;
+import nl.hypothermic.flex.state.GenericObservable;
 
 import javax.swing.*;
 import java.awt.event.ItemEvent;
@@ -45,6 +46,12 @@ public class CheckboxFlexComponent extends BaseFlexComponent {
 
 		public Builder setEnabled(boolean enabled) {
 			this.checkBox.setEnabled(enabled);
+
+			return this;
+		}
+
+		public Builder setEnabled(GenericObservable<Boolean> enabled) {
+			enabled.addObserver(this.checkBox::setEnabled);
 
 			return this;
 		}

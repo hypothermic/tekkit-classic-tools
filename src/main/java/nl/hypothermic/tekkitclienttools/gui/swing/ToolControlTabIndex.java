@@ -4,6 +4,7 @@ public enum ToolControlTabIndex {
 
 	GENERAL(GeneralToolControlTab.class),
 	TERRAIN(TerrainToolControlTab.class),
+	ESP(EspToolControlTab.class),
 
 	;
 

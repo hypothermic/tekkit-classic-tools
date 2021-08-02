@@ -11,4 +11,6 @@ public interface AddonGatewayIdIndex {
 	long INGAME_OVERLAY_RENDER = 7;
 	long KEYBOARD_INPUT = 8;
 	long RELOAD_REQUIRED_VALUE_ID = 9;
+	long TILE_ESP_ENABLED = 10;
+	long TILE_ESP_RENDER = 11;
 }
