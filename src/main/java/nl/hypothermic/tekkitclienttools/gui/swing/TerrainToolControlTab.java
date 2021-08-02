@@ -3,10 +3,7 @@ package nl.hypothermic.tekkitclienttools.gui.swing;
 import nl.hypothermic.flex.*;
 import nl.hypothermic.flex.component.BaseFlexComponent;
 import nl.hypothermic.tekkitclienttools.gui.GuiTools;
-import nl.hypothermic.tekkitclienttools.transformer.BlockBrightnessTransformer;
-import nl.hypothermic.tekkitclienttools.transformer.BlockOpacityTransformer;
-import nl.hypothermic.tekkitclienttools.transformer.BlockRenderPassTransformer;
-import nl.hypothermic.tekkitclienttools.transformer.MixedBlockBrightnessTransformer;
+import nl.hypothermic.tekkitclienttools.transformer.*;
 
 import javax.swing.*;
 
@@ -52,18 +49,23 @@ public class TerrainToolControlTab extends BaseToolControlTab {
 												.setText(horizontal.getState())
 										)
 								)
-								.textField(textField -> textField
-										.setInitialValue("14,15,16,31,56,76")
-										.setEnabled(vertical.getState())
-										.onChanged(newValue -> {
-											BlockRenderPassTransformer.EXCLUDED_BLOCKS.clear();
-											BlockRenderPassTransformer.EXCLUDED_BLOCKS.addAll(
-													Arrays.stream(newValue.split(",", 1000))
-															.map(Integer::parseInt)
-															.filter(CheckedSliderComponent::isValidItemId)
-															.collect(Collectors.toSet())
-											);
-										})
+								.list(HORIZONTAL, horizontal -> horizontal
+										.label(label -> label
+												.setText("Enabled for blocks: ")
+										)
+										.textField(textField -> textField
+												.setInitialValue("14,15,16,31,56,76")
+												.setEnabled(vertical.getState())
+												.onChanged(newValue -> {
+													BlockRenderPassTransformer.EXCLUDED_BLOCKS.clear();
+													BlockRenderPassTransformer.EXCLUDED_BLOCKS.addAll(
+															Arrays.stream(newValue.split(",", 1000))
+																	.map(Integer::parseInt)
+																	.filter(CheckedSliderComponent::isValidItemId)
+																	.collect(Collectors.toSet())
+													);
+												})
+										)
 								)
 					)
 				);
@@ -103,7 +105,7 @@ public class TerrainToolControlTab extends BaseToolControlTab {
 				.create(root -> root
 						.list(Boolean.class, MixedBlockBrightnessTransformer.brightnessEnabled, VERTICAL, vertical -> vertical
 								.checkbox(checkbox -> checkbox
-										.setLabel("Enable Flat Block Brightness Adjustments")
+										.setLabel("Enable Mixed Block Brightness Adjustments")
 										.setInitialValue(MixedBlockBrightnessTransformer.brightnessEnabled)
 										.onChanged(vertical::setState)
 										.onChanged(newValue -> MixedBlockBrightnessTransformer.brightnessEnabled = newValue)
@@ -111,7 +113,7 @@ public class TerrainToolControlTab extends BaseToolControlTab {
 								)
 								.list(String.class, HORIZONTAL, horizontal -> horizontal
 										.label(label -> label
-												.setText("Flat Block Brightness:")
+												.setText("Mixed Block Brightness:")
 										)
 										.slider(slider -> slider
 												.setMinimumValue(MixedBlockBrightnessTransformer.MIN_BRIGHTNESS)
@@ -132,11 +134,15 @@ public class TerrainToolControlTab extends BaseToolControlTab {
 
 		BaseFlexComponent listComponent = FlexComponent
 				.create(root -> root
-						.list(VERTICAL, vertical -> {
-							vertical.flex(opacityComponent);
-							vertical.flex(brightnessComponent);
-							vertical.flex(mixedBrightnessComponent);
-						})
+						.list(VERTICAL, vertical -> vertical
+								.flex(opacityComponent)
+								.separator(separator -> separator.setOrientation(JSeparator.HORIZONTAL))
+
+								.flex(brightnessComponent)
+								.separator(separator -> separator.setOrientation(JSeparator.HORIZONTAL))
+
+								.flex(mixedBrightnessComponent)
+						)
 				).build();
 
 		GroupLayout groupLayout = getBaseLayout();

@@ -19,11 +19,11 @@ import java.util.HashSet;
 @SuppressWarnings("unused")
 public class TileEntityRenderPassTransformer extends MethodNode implements Opcodes {
 
-	public static final HashSet<Integer> INCLUDED_BLOCKS = new HashSet<Integer>() {{ add(54); }};
+	public static final HashSet<Integer> INCLUDED_BLOCKS = new HashSet<>();
 
 	public static boolean isEnabled = false;
 	public static ColorSetting tileOutline = new ColorSetting(true, new Color(255, 0, 0, 255));
-	public static ColorSetting tileCursorLine = new ColorSetting(true, new Color(255, 0, 0, 255));
+	public static ColorSetting tileCursorLine = new ColorSetting(false, new Color(255, 0, 0, 255));
 
 	public TileEntityRenderPassTransformer(int access, String name, String desc, String signature, String[] exceptions, MethodVisitor mv) {
 		super(ASM4, access, name, desc, signature, exceptions);

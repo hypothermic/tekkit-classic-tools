@@ -133,6 +133,15 @@ public final class FlexComponent<T> {
 		return this;
 	}
 
+	public FlexComponent<T> separator(Consumer<SeparatorFlexComponent.Builder> consumer) {
+		SeparatorFlexComponent.Builder builder = new SeparatorFlexComponent.Builder();
+
+		consumer.accept(builder);
+		this.builder.addChild(builder);
+
+		return this;
+	}
+
 	public GenericObservable<T> getState() {
 		return this.state;
 	}

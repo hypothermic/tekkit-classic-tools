@@ -18,6 +18,7 @@ public class GeneralToolControlTab extends BaseToolControlTab {
 		BaseFlexComponent listComponent = FlexComponent
 				.create(root -> root
 						.list(VERTICAL, vertical -> vertical
+								.label(label -> label.setText("Generic"))
 								.checkbox(checkbox -> checkbox
 										.setLabel("Always on top")
 										.setInitialValue(parentFrame.isAlwaysOnTop())
@@ -33,8 +34,6 @@ public class GeneralToolControlTab extends BaseToolControlTab {
 											parentFrame.setVisible(true);
 										})
 								)
-								.label(label -> label.setText("Thank you for using Tekkit Classic Tools by hypothermic.nl"))
-								.label(label -> label.setText("Have a great day!"))
 						)
 				).build();
 
